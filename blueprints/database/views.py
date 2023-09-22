@@ -114,7 +114,7 @@ def switch_db():
         if len(book_results) == 0:
             db.books.insert_one(results[0])
             db.queue.delete_one({'result.title': title})
-            return jsonify("You successfully moved a book from your Bookshelf to your Queue.")
+            return jsonify("You successfully moved a book from your Queue to your Bookshelf.")
         else:
             return jsonify("This book is already on your Bookshelf")
     else:
