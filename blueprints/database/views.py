@@ -125,14 +125,13 @@ def switch_db():
 @bookDB.route('/add_browse', methods=['POST'])
 def add_browse():
     book = request.json
-    print(book)
     title = book['result']['title']
     bool = list(db.browse.find({'title': title}))
     if len(bool) == 0:
         db.browse.insert_one(book)
         return jsonify("")
     else:
-        return jsonify('')
+        return jsonify("")
 
 
 # display books in the browsed db
