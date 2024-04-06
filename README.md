@@ -3,7 +3,7 @@
 Backend for SWE Project: My Bookshelf
 
 Tools: 
-  Language; Python
+  Language: Python
   Framework: Flask, Blueprint
   Database: MongoDB
 
