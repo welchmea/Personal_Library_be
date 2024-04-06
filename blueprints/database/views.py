@@ -138,7 +138,7 @@ def add_browse():
 # display books in the browsed db
 @bookDB.route('/display_browsed')
 def display_browsed():
-    displayBrowsed = db.browse.find().sort('_id', -1).limit(15)
+    displayBrowsed = db.browse.find().sort('_id', -1).limit(14)
     dataJSON = []
     for data in displayBrowsed:
         image = data['result']['image']
