@@ -91,15 +91,15 @@ def delete_db():
         db.queue.delete_one({'result.title': title})
         return jsonify("You successfully deleted a book from your Queue.")
     elif len(results) == 0:
-        results = list(db.books.find({'result.title': title}))
+        results = list(db.favorites.find({'result.title': title}))
         if len(results) != 0:
-            db.books.delete_one({'result.title': title})
-            return jsonify("You successfully deleted a book from your Bookshelf.")
+            db.favorites.delete_one({'result.title': title})
+            return jsonify("You successfully deleted a book from your Favorites.")
         elif len(results) == 0:
-            results = list(db.favorites.find({'result.title': title}))
+            results = list(db.books.find({'result.title': title}))
             if len(results) != 0:
-                db.favorites.delete_one({'result.title': title})
-                return jsonify("You have successfully deleted a book from your Favorites.")
+                db.books.delete_one({'result.title': title})
+                return jsonify("You have successfully deleted a book from your Bookshelf.")
     return jsonify("Oops, something went wrong.")
 
 
