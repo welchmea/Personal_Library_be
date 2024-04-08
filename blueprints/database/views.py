@@ -21,9 +21,18 @@ def reset_db():
     if book == "browse":
         db.browse.delete_many({})
         return jsonify("Browsed collection is now empty!")
-    
+    if book == "queue":
+        db.queue.delete_many({})
+        return jsonify("Queue is now empty!")
+    if book == "favorites":
+        db.favorites.delete_many({})
+        return jsonify("Favorites is now empty!")
+    if book == "books":
+        db.books.delete_many({})
+        return jsonify("Bookshelf is now empty!")
     else:
         return jsonify("No Collections match")
+
 # add a book to library
 @bookDB.route('/add_db', methods=['POST'])
 def add_db():
