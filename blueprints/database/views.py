@@ -14,7 +14,16 @@ bookDB = Blueprint('database', __name__)
 client = MongoClient(mongo_db_url, tlsCAFile=certifi.where())
 db = client['library_app']
 
-
+# reset databases
+@bookDB.route('/reset_db', methods=['POST'])
+def reset_db():
+    book = request.json
+    if book == "browse":
+        db.browse.delete_many({})
+        return jsonify("Browsed collection is now empty!")
+    
+    else:
+        return jsonify("No Collections match")
 # add a book to library
 @bookDB.route('/add_db', methods=['POST'])
 def add_db():
