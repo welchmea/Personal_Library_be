@@ -3,10 +3,11 @@ from pymongo import MongoClient
 import certifi
 import os
 
-ENV = 'LIVE'
-if ENV =='DEV':
+ENV = 'DEV'
+if ENV == 'DEV':
 # sets ups access to MongoDB
     mongo_db_url = os.environ.get("MONGO_DB_CONN_STRING")
+
 if ENV == 'LIVE':
     mongo_db_url = os.environ.get('MONGODB_URI')
     
