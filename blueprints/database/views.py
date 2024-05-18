@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import certifi
 import os
 
-ENV = 'DEV'
+ENV = 'LIVE'
 if ENV == 'DEV':
 # sets ups access to MongoDB
     mongo_db_url = os.environ.get("MONGO_DB_CONN_STRING")
