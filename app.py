@@ -29,7 +29,7 @@ def index():
     if not search:
         return "Enter a valid search!"
 
-    maxResults = '5'
+    maxResults = '20'
     # get request to Google Books API
     url = 'https://www.googleapis.com/books/v1/volumes'
     param = search
@@ -69,6 +69,8 @@ def parseData(book):
 @app.route("/library", methods=['POST'])
 def add_library():
     book = request.json
+    parseData(book)
+    
     title = book['title']
     inLibrary = list(library.find({'result.title': title}))
     if len(inLibrary) == 0:
@@ -81,6 +83,8 @@ def add_library():
 @app.route("/queue", methods=['POST'])
 def add_queue():
     book = request.json
+    parseData(book)
+    
     title = book['title']
     inLibrary = list(library.find({'result.title': title}))
     if len(inLibrary) == 0:
