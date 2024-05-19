@@ -1,20 +1,15 @@
-# Personal_Library_be
+1. Set up virtual environment
+    python3 -m venv .venv
+               
+2. Activate virtual environment
+    . .venv/bin/activate
 
-Backend for SWE Project: My Bookshelf
+3. Set up connection to MongoDB
+    Get connection string from MongoDB
+4. Connect to server with Flask
+    Install dependencies for a Flask app
+        pip3 install Flask
+        pip3 install flask-pymongo
 
-Tools: 
-  Language: Python
-  Framework: Flask, Blueprint
-  Database: MongoDB
-
-Deployed to Heroku: https://fe-bookshelf-6bdf6bf741e2.herokuapp.com
-
-## 1. Download repository
-
-## 2. Setup .env files
-
-backend:
-
-      MONGO_DB_CONN_STRING=
-  
-  
+6. Create a requirements.txt file
+    python3 -m pip freeze > requirements.txt
