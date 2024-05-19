@@ -4,6 +4,7 @@ import requests
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from collections import Counter
 
 load_dotenv()
 
@@ -18,6 +19,8 @@ library = db.books
 queue = db.queue
 favorites = db.favorites
 browse = db.browse
+
+relevantKeys = ['image', 'title', 'author', 'description', 'category', 'pageCount', 'publisher', 'publishedDate']
 
 # search for a book from GoogleAPI
 @app.route("/")
@@ -42,7 +45,8 @@ def index():
 @app.route("/browse", methods=['POST'])
 def add_browse():
     book = request.json
-    print(book)
+    parseData(book)
+    
     title = book['title']
     inBrowsed = list(browse.find({'title': title}))
     if len(inBrowsed) == 0:
@@ -50,6 +54,16 @@ def add_browse():
         return jsonify("")
     else:
         return jsonify("")
+
+def parseData(book):
+    containedKeys = []
+    for key, value in book.items():
+        containedKeys.append(key)
+    nullValues = list((Counter(relevantKeys) - Counter(containedKeys)).elements())
+    for item in nullValues:
+        book[item] = None
+    print(book)
+    return book
 
  # add to books collection
 @app.route("/library", methods=['POST'])
@@ -111,7 +125,8 @@ def display(name):
         category = data['category']
         pageCount = data['pageCount']
         publishedDate = data['publishedDate']
-        # publisher = data['publisher']
+        publisher = data['publisher']
+        
         dataDict = {
             'image': image,
             'title': title,
@@ -120,7 +135,7 @@ def display(name):
             'category': category,
             'pageCount': pageCount,
             'publishedDate': publishedDate,
-            # 'publisher': publisher,
+            'publisher': publisher,
         }
         dataJSON.append(dataDict)
     return dataJSON
