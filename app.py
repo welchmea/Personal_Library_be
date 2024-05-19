@@ -111,8 +111,7 @@ def display(name):
         category = data['category']
         pageCount = data['pageCount']
         publishedDate = data['publishedDate']
-        if (data['publisher']):
-            publisher = data['publisher']
+        # publisher = data['publisher']
         dataDict = {
             'image': image,
             'title': title,
