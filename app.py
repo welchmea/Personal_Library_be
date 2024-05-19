@@ -129,7 +129,6 @@ def display(name):
 @app.route('/reset_db', methods=['POST'])
 def reset_db():
     book = request.json
-    print(book)
     if book == "browse":
         browse.delete_many({})
         return jsonify("Browsed collection is now empty!")
@@ -149,18 +148,44 @@ def reset_db():
 @app.route('/delete_db/<title>', methods=['POST'])
 def delete_db(title):
     results = request.args.get('title')
-    if title == "browse":
-        browse.delete_one({'title': results})
-        return jsonify("")
+    title.delete_one({'title': results})
+    # if title == "browse":
+    #     browse.delete_one({'title': results})
+    #     return jsonify("")
+    # if title == "queue":
+    #     queue.delete_one({'title': results})
+    #     return jsonify("")
+    # if title == "favorites":
+    #     favorites.delete_one({'title': results})
+    #     return jsonify("")
+    # if title == "library":
+    #     library.delete_one({'title': results})
+    #     return jsonify("")
+    # else:
+    #     return jsonify("No Collections match")
+    
+# switch items between library and queue collections
+@app.route('/switch_db/<title>', methods=['POST'])
+def switch_db(title):
+    results = request.args.get('title')
     if title == "queue":
+        inQueue = list(queue.find({'title': results}))
         queue.delete_one({'title': results})
-        return jsonify("")
-    if title == "favorites":
-        favorites.delete_one({'title': results})
-        return jsonify("")
-    if title == "library":
+        inLibrary = list(library.find({'title': title}))
+        if len(inLibrary) == 0:
+            library.insert_one(inQueue[0])
+            return jsonify("This book has been added to your Bookshelf.")
+        else:
+            return jsonify("This book is already on your Bookshelf.")
+    elif title == "library":
+        inLibrary = list(library.find({'title': results}))
         library.delete_one({'title': results})
-        return jsonify("")
+        inQueue = list(queue.find({'title': title}))
+        if len(inQueue) == 0:
+            queue.insert_one(inLibrary[0])
+            return jsonify("This book has been added to your Queue.")
+        else:
+            return jsonify("This book is already on your Queue.")
     else:
         return jsonify("No Collections match")
 
