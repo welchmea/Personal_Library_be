@@ -26,23 +26,23 @@ def index():
     if not search:
         return "Enter a valid search!"
 
-    maxResults = '15'
+    maxResults = '5'
     # get request to Google Books API
     url = 'https://www.googleapis.com/books/v1/volumes'
     param = search
     querystring = {'q': param, 'maxResults': maxResults,
-                   'orderBy': 'relevance', 'key': 'AIzaSyBkFXyRJFdICDMby_yDSHHZgdjH0MSTtLQ'}
+                   'orderBy': 'relevance', 'key': os.environ.get('GOOGLE_API_KEY')}
 
     # query results
     response = requests.get(url, params=querystring)
     data = response.json()
-
     return data
 
  # add to browsed collection
 @app.route("/browse", methods=['POST'])
 def add_browse():
     book = request.json
+    print(book)
     title = book['title']
     inBrowsed = list(browse.find({'title': title}))
     if len(inBrowsed) == 0:
@@ -120,7 +120,7 @@ def display(name):
             'category': category,
             'pageCount': pageCount,
             'publishedDate': publishedDate,
-            'publisher': publisher,
+            # 'publisher': publisher,
         }
         dataJSON.append(dataDict)
     return dataJSON
@@ -129,41 +129,23 @@ def display(name):
 @app.route('/reset_db', methods=['POST'])
 def reset_db():
     book = request.json
-    book.delete_many({})
-    # if book == "browse":
-    #     browse.delete_many({})
-    #     return jsonify("Browsed collection is now empty!")
-    # if book == "queue":
-    #     queue.delete_many({})
-    #     return jsonify("Queue is now empty!")
-    # if book == "favorites":
-    #     favorites.delete_many({})
-    #     return jsonify("Favorites is now empty!")
-    # if book == "library":
-    #     library.delete_many({})
-    #     return jsonify("Bookshelf is now empty!")
-    # else:
-    #     return jsonify("No Collections match")
+    collection = db[book]
+    if collection is not None:
+        collection.delete_many({})
+        return jsonify("")
+    else:
+        return jsonify("No Collections match")
 
 # delete individual books from collections
 @app.route('/delete_db/<title>', methods=['POST'])
 def delete_db(title):
     results = request.args.get('title')
-    title.delete_one({'title': results})
-    # if title == "browse":
-    #     browse.delete_one({'title': results})
-    #     return jsonify("")
-    # if title == "queue":
-    #     queue.delete_one({'title': results})
-    #     return jsonify("")
-    # if title == "favorites":
-    #     favorites.delete_one({'title': results})
-    #     return jsonify("")
-    # if title == "library":
-    #     library.delete_one({'title': results})
-    #     return jsonify("")
-    # else:
-    #     return jsonify("No Collections match")
+    collection = db[title]
+    if collection is not None:
+        collection.delete_one({'title': results})
+        return jsonify("")
+    else:
+        return jsonify("No Collections match")
     
 # switch items between library and queue collections
 @app.route('/switch_db/<title>', methods=['POST'])
