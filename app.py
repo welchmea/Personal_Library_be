@@ -15,7 +15,7 @@ CORS(app)
 client = MongoClient(os.environ.get("MONGODB_URI"))
 
 db = client.library_app
-library = db.books
+library = db.library
 queue = db.queue
 favorites = db.favorites
 browse = db.browse
