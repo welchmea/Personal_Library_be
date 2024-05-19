@@ -111,7 +111,8 @@ def display(name):
         category = data['category']
         pageCount = data['pageCount']
         publishedDate = data['publishedDate']
-        publisher = data['publisher']
+        if (data['publisher']):
+            publisher = data['publisher']
         dataDict = {
             'image': image,
             'title': title,
@@ -129,20 +130,21 @@ def display(name):
 @app.route('/reset_db', methods=['POST'])
 def reset_db():
     book = request.json
-    if book == "browse":
-        browse.delete_many({})
-        return jsonify("Browsed collection is now empty!")
-    if book == "queue":
-        queue.delete_many({})
-        return jsonify("Queue is now empty!")
-    if book == "favorites":
-        favorites.delete_many({})
-        return jsonify("Favorites is now empty!")
-    if book == "library":
-        library.delete_many({})
-        return jsonify("Bookshelf is now empty!")
-    else:
-        return jsonify("No Collections match")
+    book.delete_many({})
+    # if book == "browse":
+    #     browse.delete_many({})
+    #     return jsonify("Browsed collection is now empty!")
+    # if book == "queue":
+    #     queue.delete_many({})
+    #     return jsonify("Queue is now empty!")
+    # if book == "favorites":
+    #     favorites.delete_many({})
+    #     return jsonify("Favorites is now empty!")
+    # if book == "library":
+    #     library.delete_many({})
+    #     return jsonify("Bookshelf is now empty!")
+    # else:
+    #     return jsonify("No Collections match")
 
 # delete individual books from collections
 @app.route('/delete_db/<title>', methods=['POST'])
