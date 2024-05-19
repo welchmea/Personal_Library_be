@@ -55,16 +55,6 @@ def add_browse():
     else:
         return jsonify("")
 
-def parseData(book):
-    containedKeys = []
-    for key, value in book.items():
-        containedKeys.append(key)
-    nullValues = list((Counter(relevantKeys) - Counter(containedKeys)).elements())
-    for item in nullValues:
-        book[item] = None
-    print(book)
-    return book
-
  # add to books collection
 @app.route("/library", methods=['POST'])
 def add_library():
@@ -99,7 +89,7 @@ def add_queue():
 @app.route("/favorites", methods=['POST'])
 def add_favorites():
     book = request.json
-    print(book)
+
     title = book['title']
     inFavorites = list(favorites.find({'title': title}))
     if len(inFavorites) == 0:
@@ -107,6 +97,16 @@ def add_favorites():
         return jsonify("This book has been added to Favorites.")
     else:
         return jsonify("This book is already in Favorites.")
+
+def parseData(book):
+    containedKeys = []
+    for key, value in book.items():
+        containedKeys.append(key)
+    nullValues = list((Counter(relevantKeys) - Counter(containedKeys)).elements())
+    for item in nullValues:
+        book[item] = None
+    print(book)
+    return book
 
 # route to display all collections
 @app.route('/display/<name>', methods=['GET'])
