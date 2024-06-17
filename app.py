@@ -20,7 +20,7 @@ queue = db.queue
 favorites = db.favorites
 browse = db.browse
 
-relevantKeys = ['image', 'title', 'author', 'description', 'category', 'pageCount', 'publisher', 'publishedDate']
+relevant_keys = ['image', 'title', 'author', 'description', 'category', 'pageCount', 'publisher', 'publishedDate']
 
 # search for a book from GoogleAPI
 @app.route("/")
@@ -29,11 +29,11 @@ def index():
     if not search:
         return "Enter a valid search!"
 
-    maxResults = '20'
+    max_results = '20'
     # get request to Google Books API
     url = 'https://www.googleapis.com/books/v1/volumes'
     param = search
-    querystring = {'q': param, 'maxResults': maxResults,
+    querystring = {'q': param, 'maxResults': max_results,
                    'orderBy': 'relevance', 'key': os.environ.get('GOOGLE_API_KEY')}
 
     # query results
@@ -45,11 +45,11 @@ def index():
 @app.route("/browse", methods=['POST'])
 def add_browse():
     book = request.json
-    parseData(book)
+    parse_data(book)
     
     title = book['title']
-    inBrowsed = list(browse.find({'title': title}))
-    if len(inBrowsed) == 0:
+    in_browsed = list(browse.find({'title': title}))
+    if len(in_browsed) == 0:
         browse.insert_one(book)
         return jsonify("")
     else:
@@ -59,11 +59,11 @@ def add_browse():
 @app.route("/library", methods=['POST'])
 def add_library():
     book = request.json
-    parseData(book)
+    parse_data(book)
     
     title = book['title']
-    inLibrary = list(library.find({'result.title': title}))
-    if len(inLibrary) == 0:
+    in_library = list(library.find({'result.title': title}))
+    if len(in_library) == 0:
         library.insert_one(book)
         return jsonify("This book has been added to your Bookshelf.")
     else:
@@ -73,11 +73,11 @@ def add_library():
 @app.route("/queue", methods=['POST'])
 def add_queue():
     book = request.json
-    parseData(book)
+    parse_data(book)
     
     title = book['title']
-    inLibrary = list(library.find({'result.title': title}))
-    if len(inLibrary) == 0:
+    in_library = list(library.find({'result.title': title}))
+    if len(in_library) == 0:
         bool = list(queue.find({'result.title': title}))
         if len(bool) == 0:
             queue.insert_one(book)
@@ -91,19 +91,19 @@ def add_favorites():
     book = request.json
 
     title = book['title']
-    inFavorites = list(favorites.find({'title': title}))
-    if len(inFavorites) == 0:
+    in_favorites = list(favorites.find({'title': title}))
+    if len(in_favorites) == 0:
         favorites.insert_one(book)
         return jsonify("This book has been added to Favorites.")
     else:
         return jsonify("This book is already in Favorites.")
 
-def parseData(book):
-    containedKeys = []
+def parse_data(book):
+    contained_keys = []
     for key, value in book.items():
-        containedKeys.append(key)
-    nullValues = list((Counter(relevantKeys) - Counter(containedKeys)).elements())
-    for item in nullValues:
+        contained_keys.append(key)
+    null_values = list((Counter(relevant_keys) - Counter(contained_keys)).elements())
+    for item in null_values:
         book[item] = None
     print(book)
     return book
@@ -112,16 +112,16 @@ def parseData(book):
 @app.route('/display/<name>', methods=['GET'])
 def display(name):
     if name == 'library':
-        displayBrowsed = library.find().sort('result.title', 1)
+        display_browsed = library.find().sort('result.title', 1)
     elif name == 'browse':
-        displayBrowsed = browse.find().sort('_id', -1).limit(14)
+        display_browsed = browse.find().sort('_id', -1).limit(14)
     elif name == 'favorites':
-        displayBrowsed = favorites.find().sort('result.title', 1)
+        display_browsed = favorites.find().sort('result.title', 1)
     else:
-        displayBrowsed = queue.find()
+        display_browsed = queue.find()
     
-    dataJSON = []
-    for data in displayBrowsed:
+    data_json = []
+    for data in display_browsed:
         image = data['image']
         title = data['title']
         author = data['author']
@@ -131,7 +131,7 @@ def display(name):
         publishedDate = data['publishedDate']
         publisher = data['publisher']
         
-        dataDict = {
+        data_dict = {
             'image': image,
             'title': title,
             'author': author,
@@ -141,8 +141,8 @@ def display(name):
             'publishedDate': publishedDate,
             'publisher': publisher,
         }
-        dataJSON.append(dataDict)
-    return dataJSON
+        data_json.append(data_dict)
+    return data_json
 
 # reset the collections to empty
 @app.route('/reset_db', methods=['POST'])
@@ -171,20 +171,20 @@ def delete_db(title):
 def switch_db(title):
     results = request.args.get('title')
     if title == "queue":
-        inQueue = list(queue.find({'title': results}))
+        in_queue = list(queue.find({'title': results}))
         queue.delete_one({'title': results})
-        inLibrary = list(library.find({'title': title}))
-        if len(inLibrary) == 0:
-            library.insert_one(inQueue[0])
+        in_library = list(library.find({'title': title}))
+        if len(in_library) == 0:
+            library.insert_one(in_queue[0])
             return jsonify("This book has been added to your Bookshelf.")
         else:
             return jsonify("This book is already on your Bookshelf.")
     elif title == "library":
-        inLibrary = list(library.find({'title': results}))
+        in_library = list(library.find({'title': results}))
         library.delete_one({'title': results})
-        inQueue = list(queue.find({'title': title}))
-        if len(inQueue) == 0:
-            queue.insert_one(inLibrary[0])
+        in_queue = list(queue.find({'title': title}))
+        if len(in_queue) == 0:
+            queue.insert_one(in_library[0])
             return jsonify("This book has been added to your Queue.")
         else:
             return jsonify("This book is already on your Queue.")
