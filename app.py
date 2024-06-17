@@ -127,7 +127,7 @@ def display(name):
         author = data['author']
         description = data['description']
         category = data['category']
-        pageCount = data['pageCount']
+        page_count = data['pageCount']
         published_date = data['publishedDate']
         publisher = data['publisher']
         
@@ -137,7 +137,7 @@ def display(name):
             'author': author,
             'description': description,
             'category': category,
-            'pageCount': pageCount,
+            'pageCount': page_count,
             'publishedDate': published_date,
             'publisher': publisher,
         }
