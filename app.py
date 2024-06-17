@@ -128,7 +128,7 @@ def display(name):
         description = data['description']
         category = data['category']
         pageCount = data['pageCount']
-        publishedDate = data['publishedDate']
+        published_date = data['publishedDate']
         publisher = data['publisher']
         
         data_dict = {
@@ -138,7 +138,7 @@ def display(name):
             'description': description,
             'category': category,
             'pageCount': pageCount,
-            'publishedDate': publishedDate,
+            'publishedDate': published_date,
             'publisher': publisher,
         }
         data_json.append(data_dict)
